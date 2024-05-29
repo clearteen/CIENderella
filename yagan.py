@@ -34,30 +34,43 @@ def run_submit_form(driver, url, writer, pw, people, reason, nowtime):
     담당자 명 및 인원: {writer} 외 {people}인
     사유: {reason}"""
 
+    # 1. 웹사이트 접속
     driver.get(url)
     time.sleep(3)
 
+    # 검사
+    # already = web.uncertain(lambda: web.find(tag="span", name="Seats"))
     already = driver.find_elements(
         By.XPATH,
-        "//div[contains(@class, 'li_board')]//*[contains(text(), 'CIEN') and contains(text(), '28')]",
+        f"//div[contains(@class, 'li_board')]//*[contains(text(), 'CIEN') and contains(text(), {month}) and contains(text(), {day})]",
     )
     if already:
-        print("already!")
         messagebox.showinfo("정보", "오늘은 이미 작성했습니다!")
+
     else:
-        print("pass")
+        # 2. 글쓰기 버튼 클릭
         find('//*[@id="w2022041811317f78559a9"]/div/div[2]/div[3]/div[2]/a').click()
         time.sleep(1)
+
+        # 3. writer 입력 채우기
         find(
             '//*[@id="post_form"]/div[2]/div/div[2]/div[2]/div[1]/div[2]/span[1]/input'
         ).send_keys(writer)
+
+        # 4. 비밀번호 입력 채우기
         find(
             '//*[@id="post_form"]/div[2]/div/div[2]/div[2]/div[1]/div[2]/span[2]/input'
         ).send_keys(pw)
+
+        # 5. 제목 입력 채우기
         find('//*[@id="post_subject"]').clear()
         find('//*[@id="post_subject"]').send_keys(title)
+
+        # 6. 본문 내용 채우기
         find('//*[@id="post_body"]/div[1]/div').clear()
         find('//*[@id="post_body"]/div[1]/div').send_keys(content)
+
+        # (전송)
         # find('//*[@id="board_container"]/div[1]/div/div[2]/button').click()
 
 
@@ -81,12 +94,12 @@ def submit_form():
         nowtime=datetime.now(),
     )
 
-    messagebox.showinfo("정보", "양식 제출이 완료되었습니다!")
+    # messagebox.showinfo("정보", "양식 제출이 완료되었습니다!")
 
 
 app = tk.Tk()
 app.title("동아리 야간 신청")
-app.geometry("400x250")
+app.geometry("400x200")
 app.resizable(False, False)
 
 frame = ttk.Frame(app, padding="10 10 10 10")
@@ -119,9 +132,10 @@ reason_entry.grid(row=2, column=1, pady=5)
 submit_button = ttk.Button(frame, text="제출", command=submit_form)
 submit_button.grid(row=3, column=1, pady=20, sticky=(tk.W, tk.E))
 
-ttk.Label(frame, text="제작자: 주황폰트 외 1명", font=("Helvetica", 9, "italic")).grid(
-    row=4, column=0, columnspan=2, pady=10, sticky=tk.E
-)
+ttk.Label(
+    frame, text="제작자: 주황폰트, 야릇한미디움레어", font=("Helvetica", 9, "italic")
+).grid(row=4, column=0, columnspan=2, pady=10, sticky=tk.E)
+
 print("비밀번호는 다섯 자리")
 print("엔터 후 실행")
 app.mainloop()
