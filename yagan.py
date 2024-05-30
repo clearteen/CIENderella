@@ -137,5 +137,5 @@ ttk.Label(
 ).grid(row=4, column=0, columnspan=2, pady=10, sticky=tk.E)
 
 print("비밀번호는 다섯 자리")
-print("엔터 후 실행")
+print("엔터 후")
 app.mainloop()
