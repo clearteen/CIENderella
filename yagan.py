@@ -116,9 +116,19 @@ def submit_form():
     # messagebox.showinfo("정보", "양식 제출이 완료되었습니다!")
 
 
+def show_help():
+    help_text = """<동아리방 야간 사용 신청 프로그램 ver 1.1>
+- 뭐 입력 안 하고 제출하면 기본값으로 작성
+- 값 입력 시 해당값으로 작성
+- 인터넷 너무 느리면 잘 안 될 수도 있음
+- 문제 시 삭제
+- 비밀번호는 국룰 다섯자리 숫자"""
+    messagebox.showinfo("도움말", help_text)
+
+
 app = tk.Tk()
 app.title("동아리 야간 신청")
-app.geometry("400x200")
+app.geometry("400x220")
 app.resizable(False, False)
 
 frame = ttk.Frame(app, padding="10 10 10 10")
@@ -126,33 +136,47 @@ frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
 
 frame.columnconfigure(0, weight=1)
 frame.columnconfigure(1, weight=1)
+frame.rowconfigure(4, minsize=30)
 
 ttk.Label(frame, text="글쓴이 (기본값: 이기석)").grid(
-    row=0, column=0, sticky=tk.W, pady=5
+    row=1, column=0, sticky=tk.W, pady=5
 )
-ttk.Label(frame, text="인원수 (기본값: 2)").grid(row=1, column=0, sticky=tk.W, pady=5)
+ttk.Label(frame, text="인원수 (기본값: 2)").grid(row=2, column=0, sticky=tk.W, pady=5)
 ttk.Label(frame, text="야간 신청 이유 (기본값: 랜덤)").grid(
-    row=2, column=0, sticky=tk.W, pady=5
+    row=3, column=0, sticky=tk.W, pady=5
 )
 
 writer_var = tk.StringVar()
 people_var = tk.StringVar()
 reason_var = tk.StringVar()
 
+
+help_button = ttk.Button(frame, text="도움말", command=show_help)
+help_button.grid(row=0, column=1, sticky=(tk.E))
+
 writer_entry = ttk.Entry(frame, textvariable=writer_var, width=30)
-writer_entry.grid(row=0, column=1, pady=5)
+writer_entry.grid(row=1, column=1, pady=5)
 
 people_entry = ttk.Entry(frame, textvariable=people_var, width=30)
-people_entry.grid(row=1, column=1, pady=5)
+people_entry.grid(row=2, column=1, pady=5)
 
 reason_entry = ttk.Entry(frame, textvariable=reason_var, width=30)
-reason_entry.grid(row=2, column=1, pady=5)
+reason_entry.grid(row=3, column=1, pady=5)
 
 submit_button = ttk.Button(frame, text="제출", command=submit_form)
-submit_button.grid(row=3, column=1, pady=20, sticky=(tk.W, tk.E))
+submit_button.grid(
+    row=4, columnspan=2, ipady=5, ipadx=5, pady=10, sticky=(tk.W, tk.E, tk.W)
+)
+
 
 ttk.Label(
-    frame, text="제작자: 주황폰트, 야릇한미디움레어", font=("Helvetica", 9, "italic")
-).grid(row=4, column=0, columnspan=2, pady=10, sticky=tk.E)
+    frame,
+    text="제작자: 주황폰트, 곽아만, 야릇한미디움레어",
+    font=("Helvetica", 9, "italic"),
+).grid(row=5, column=0, columnspan=2, pady=5, sticky=tk.E)
 
+print("""<ver 1.1 변경내용>
+- UI 개선
+- 텍스트 박스 추가
+- 안정성 개선""")
 app.mainloop()
