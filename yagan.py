@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import WebDriverException
@@ -40,10 +40,13 @@ def run_submit_form(driver, url, writer, pw, people, reason, nowtime):
 
     month = nowtime.month
     day = nowtime.day
+    next_date = nowtime + timedelta(days=1)
+    next_month = next_date.month
+    next_day = next_date.day
     title = f"{month}/{day}_CIEN 사용신청입니다."
     content = f"""
     동아리명: CIEN
-    사용 날짜 및 시간: {month}월 {day}일 00시~07시
+    사용 날짜 및 시간: {next_month}월 {next_day}일 00시~07시
     담당자 명 및 인원: {writer} 외 {people}인
     사유: {reason}"""
 
@@ -62,11 +65,11 @@ def run_submit_form(driver, url, writer, pw, people, reason, nowtime):
 
     else:
         # 2. 글쓰기 버튼 클릭
-        safety(
+        """safety(
             lambda: find(
                 '//*[@id="w2022041811317f78559a9"]/div/div[2]/div[3]/div[2]/a'
             ).click()
-        )
+        )"""
         # time.sleep(1)
 
         # 3. writer 입력 채우기
@@ -105,7 +108,7 @@ def submit_form():
 
     run_submit_form(
         driver,
-        url="https://cauclub.co.kr/reports",
+        url="https://cauclub.co.kr/reports/?q=YToxOntzOjEyOiJrZXl3b3JkX3R5cGUiO3M6MzoiYWxsIjt9&board=b20220418b496dcf2b8ae2&bmode=write&back_url=L3JlcG9ydHM%3D",
         writer=writer,
         people=people,
         pw=14789,
@@ -175,8 +178,11 @@ ttk.Label(
     font=("Helvetica", 9, "italic"),
 ).grid(row=5, column=0, columnspan=2, pady=5, sticky=tk.E)
 
-print("""<ver 1.1 변경내용>
+print("""<ver 1.1>
 - UI 개선
 - 텍스트 박스 추가
-- 안정성 개선""")
+- 안정성 개선
+<ver 1.2>
+- 이미 작성된 글 확인 과정 스킵(임시)
+- 사용 날짜가 다음 날 기준으로 작성되도록 수정""")
 app.mainloop()
