@@ -4,6 +4,7 @@ import time
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import WebDriverException
 import random
 
 
@@ -25,6 +26,18 @@ def run_submit_form(driver, url, writer, pw, people, reason, nowtime):
     def find(xpath):
         return driver.find_element(By.XPATH, xpath)
 
+    def safety(func, n=50):
+        for _ in range(n):
+            try:
+                func()
+                return
+            except WebDriverException:
+                time.sleep(0.1)
+            except Exception:
+                time.sleep(0.1)
+
+        raise WebDriverException
+
     month = nowtime.month
     day = nowtime.day
     title = f"{month}/{day}_CIEN 사용신청입니다."
@@ -36,7 +49,7 @@ def run_submit_form(driver, url, writer, pw, people, reason, nowtime):
 
     # 1. 웹사이트 접속
     driver.get(url)
-    time.sleep(3)
+    # time.sleep(3)
 
     # 검사
     # already = web.uncertain(lambda: web.find(tag="span", name="Seats"))
@@ -49,13 +62,19 @@ def run_submit_form(driver, url, writer, pw, people, reason, nowtime):
 
     else:
         # 2. 글쓰기 버튼 클릭
-        find('//*[@id="w2022041811317f78559a9"]/div/div[2]/div[3]/div[2]/a').click()
-        time.sleep(1)
+        safety(
+            lambda: find(
+                '//*[@id="w2022041811317f78559a9"]/div/div[2]/div[3]/div[2]/a'
+            ).click()
+        )
+        # time.sleep(1)
 
         # 3. writer 입력 채우기
-        find(
-            '//*[@id="post_form"]/div[2]/div/div[2]/div[2]/div[1]/div[2]/span[1]/input'
-        ).send_keys(writer)
+        safety(
+            lambda: find(
+                '//*[@id="post_form"]/div[2]/div/div[2]/div[2]/div[1]/div[2]/span[1]/input'
+            ).send_keys(writer)
+        )
 
         # 4. 비밀번호 입력 채우기
         find(
@@ -136,6 +155,4 @@ ttk.Label(
     frame, text="제작자: 주황폰트, 야릇한미디움레어", font=("Helvetica", 9, "italic")
 ).grid(row=4, column=0, columnspan=2, pady=10, sticky=tk.E)
 
-print("비밀번호는 다섯 자리")
-print("엔터 후")
 app.mainloop()
