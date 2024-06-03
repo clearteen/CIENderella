@@ -70,6 +70,9 @@ def run_submit_form(driver, url, writer, pw, people, reason, nowtime):
                 '//*[@id="w2022041811317f78559a9"]/div/div[2]/div[3]/div[2]/a'
             ).click()
         )"""
+        driver.get(
+            "https://cauclub.co.kr/reports/?q=YToxOntzOjEyOiJrZXl3b3JkX3R5cGUiO3M6MzoiYWxsIjt9&board=b20220418b496dcf2b8ae2&bmode=write&back_url=L3JlcG9ydHM%3D"
+        )
         # time.sleep(1)
 
         # 3. writer 입력 채우기
@@ -108,7 +111,7 @@ def submit_form():
 
     run_submit_form(
         driver,
-        url="https://cauclub.co.kr/reports/?q=YToxOntzOjEyOiJrZXl3b3JkX3R5cGUiO3M6MzoiYWxsIjt9&board=b20220418b496dcf2b8ae2&bmode=write&back_url=L3JlcG9ydHM%3D",
+        url="https://cauclub.co.kr/reports",
         writer=writer,
         people=people,
         pw=14789,
@@ -184,5 +187,7 @@ print("""<ver 1.1>
 - 안정성 개선
 <ver 1.2>
 - 이미 작성된 글 확인 과정 스킵(임시)
-- 사용 날짜가 다음 날 기준으로 작성되도록 수정""")
+- 사용 날짜가 다음 날 기준으로 작성되도록 수정
+<ver 1.3>
+- 이미 작성된 글 확인 기능 다시 추가""")
 app.mainloop()
