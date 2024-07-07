@@ -44,10 +44,14 @@ def run_submit_form(driver, url, writer, pw, people, reason, nowtime):
     next_month = next_date.month
     next_day = next_date.day
     title = f"{month}/{day}_CIEN 사용신청입니다."
+    if people > 0:
+        who = f"{writer} 외 {people}인"
+    else:
+        who = writer
     content = f"""
     동아리명: CIEN
     사용 날짜 및 시간: {next_month}월 {next_day}일 00시~07시
-    담당자 명 및 인원: {writer} 외 {people}인
+    담당자 명 및 인원: {who}
     사유: {reason}"""
 
     # 1. 웹사이트 접속
@@ -58,7 +62,7 @@ def run_submit_form(driver, url, writer, pw, people, reason, nowtime):
     # already = web.uncertain(lambda: web.find(tag="span", name="Seats"))
     already = driver.find_elements(
         By.XPATH,
-        f"//div[contains(@class, 'li_board')]//*[contains(text(), 'CIEN') and contains(text(), {month}) and contains(text(), {day})]",
+        f"//div[contains(@class, 'li_board')]//*[contains(text(), '{title}')]",
     )
     if already:
         messagebox.showinfo("정보", "오늘은 이미 작성했습니다!")
@@ -123,10 +127,10 @@ def submit_form():
 
 
 def show_help():
-    help_text = """<동아리방 야간 사용 신청 프로그램 ver 1.1>
+    help_text = """<동아리방 야간 사용 신청 프로그램 ver 1.4>
 - 뭐 입력 안 하고 제출하면 기본값으로 작성
 - 값 입력 시 해당값으로 작성
-- 인터넷 너무 느리면 잘 안 될 수도 있음
+- 인터넷 너무 느리면 잘 안 될 수 있음
 - 문제 시 삭제
 - 비밀번호는 국룰 다섯자리 숫자"""
     messagebox.showinfo("도움말", help_text)
@@ -177,17 +181,11 @@ submit_button.grid(
 
 ttk.Label(
     frame,
-    text="제작자: 주황폰트, 곽아만, 야릇한미디움레어",
+    text="기여자: 주황폰트, 곽아만, 야릇한미디움레어",
     font=("Helvetica", 9, "italic"),
 ).grid(row=5, column=0, columnspan=2, pady=5, sticky=tk.E)
 
-print("""<ver 1.1>
-- UI 개선
-- 텍스트 박스 추가
-- 안정성 개선
-<ver 1.2>
-- 이미 작성된 글 확인 과정 스킵(임시)
-- 사용 날짜가 다음 날 기준으로 작성되도록 수정
-<ver 1.3>
-- 이미 작성된 글 확인 기능 다시 추가""")
+print("""<ver 1.4>
+- 일월이 같을 때(7월7일 등) 이미 쓴 것으로 처리되는 것 수정 -> 제목이 완전히 일치할 때(매크로로 작성된 내용)만 중복 처리
+- 작성자 외 0명일 때도 자연스럽게 작성되도록 수정""")
 app.mainloop()
