@@ -163,7 +163,7 @@ people_var = tk.StringVar()
 reason_var = tk.StringVar()
 
 
-help_button = ttk.Button(frame, text="도움말", command=show_help)
+help_button = ttk.Button(frame, text="Help", command=show_help)
 help_button.grid(row=0, column=1, sticky=(tk.E))
 
 writer_entry = ttk.Entry(frame, textvariable=writer_var, width=30)
@@ -206,7 +206,10 @@ print(f"""<동아리방 야간 사용 신청 프로그램>
 
 - 프로그램 실행 시 콘솔창에서 도트 이미지 출력(중요)
   * 이런 거 하나쯤 있어야 됨
-  * 아직 미정⠀
+  * 아직 미정
+
+<ver 1.5.1>
+- "도움말" -> "Help"
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠎⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⢀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡠⢃⠕⡸⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
