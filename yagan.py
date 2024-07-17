@@ -7,6 +7,8 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import WebDriverException
 import random
 
+version = "1.5"
+
 
 def get_random_reason():
     reasons = [
@@ -44,8 +46,8 @@ def run_submit_form(driver, url, writer, pw, people, reason, nowtime):
     next_month = next_date.month
     next_day = next_date.day
     title = f"{month}/{day}_CIEN 사용신청입니다."
-    if people > 0:
-        who = f"{writer} 외 {people}인"
+    if people > 1:
+        who = f"{writer} 외 {people-1}인"
     else:
         who = writer
     content = f"""
@@ -104,9 +106,9 @@ def run_submit_form(driver, url, writer, pw, people, reason, nowtime):
 
 
 def submit_form():
-    writer = writer_var.get() or "이기석"
+    writer = writer_var.get() or "김현수"
     people_input = people_var.get()
-    people = int(people_input) if people_input.isdigit() else 2
+    people = int(people_input) if people_input.isdigit() else 1
     reason = reason_var.get() or get_random_reason()
 
     chrome_options = webdriver.ChromeOptions()
@@ -120,20 +122,20 @@ def submit_form():
         people=people,
         pw=14789,
         reason=reason,
-        nowtime=datetime.now(),
+        nowtime=datetime.now()
+        if datetime.now().hour >= 12
+        else datetime.now() - timedelta(days=1),
     )
 
     # messagebox.showinfo("정보", "양식 제출이 완료되었습니다!")
 
 
 def show_help():
-    help_text = """<동아리방 야간 사용 신청 프로그램 ver 1.4>
-- 뭐 입력 안 하고 제출하면 기본값으로 작성
-- 값 입력 시 해당값으로 작성
-- 인터넷 너무 느리면 잘 안 될 수 있음
+    help_text = """- 입력값 공백 시 기본값으로 제출
 - 문제 시 삭제
-- 비밀번호는 국룰 다섯자리 숫자"""
-    messagebox.showinfo("도움말", help_text)
+- 비밀번호 - 국룰 다섯 자리 숫자
+- 오전에 작성 시 작일 기준으로 프로그램 실행됨"""
+    messagebox.showinfo("Help", help_text)
 
 
 app = tk.Tk()
@@ -148,10 +150,10 @@ frame.columnconfigure(0, weight=1)
 frame.columnconfigure(1, weight=1)
 frame.rowconfigure(4, minsize=30)
 
-ttk.Label(frame, text="글쓴이 (기본값: 이기석)").grid(
+ttk.Label(frame, text="글쓴이 (기본값: 김현수)").grid(
     row=1, column=0, sticky=tk.W, pady=5
 )
-ttk.Label(frame, text="인원수 (기본값: 2)").grid(row=2, column=0, sticky=tk.W, pady=5)
+ttk.Label(frame, text="인원 수 (기본값: 1)").grid(row=2, column=0, sticky=tk.W, pady=5)
 ttk.Label(frame, text="야간 신청 이유 (기본값: 랜덤)").grid(
     row=3, column=0, sticky=tk.W, pady=5
 )
@@ -185,7 +187,48 @@ ttk.Label(
     font=("Helvetica", 9, "italic"),
 ).grid(row=5, column=0, columnspan=2, pady=5, sticky=tk.E)
 
-print("""<ver 1.4>
-- 일월이 같을 때(7월7일 등) 이미 쓴 것으로 처리되는 것 수정 -> 제목이 완전히 일치할 때(매크로로 작성된 내용)만 중복 처리
-- 작성자 외 0명일 때도 자연스럽게 작성되도록 수정""")
+print(f"""<동아리방 야간 사용 신청 프로그램>
+<ver {version}>
+- 기본값 수정
+  * 작성자: 이기석 -> 김현수
+  * 인원 수: 2 -> 1
+  * 맨날 내가 쓰는데 직접 적기 번거로움
+
+- 작성 시간에 따른 작성일 조정
+  * 오전 시간에 작성 시 작일 기준으로 작성일 설정
+  * 가끔 12시 넘겨서 쓸 수도 있는데, 그러면 그날 밤에 쓸 때 중복처리되는 거 막는 의도
+
+- 인원 수 직관성 개선
+  * 동아리방에 있는 인원 수 기준으로 작성
+  * "외 n명"의 n을기준으로 입력받았던 게 비직관적이라고 생각해서 수정함
+
+- 도움말 수정
+
+- 프로그램 실행 시 콘솔창에서 도트 이미지 출력(중요)
+  * 이런 거 하나쯤 있어야 됨
+  * 아직 미정⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠎⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⢀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡠⢃⠕⡸⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢧⢂⢋⠕⠒⠤⢄⣀⠀⣀⢀⣀⢀⢀⠔⠁⠀⡂⢊⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣎⢐⠀⠂⠀⠀⠀⠁⠀⠀⠀⠀⠈⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢢⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠰⡁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠛⠃⠀⠀⠀⠀⠘⠛⠀⠀⠀⠀⢕⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢇⠀⠀⠀⠀⠀⠀⠁⠊⠑⠈⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢈⡶⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⢶⡁⠀⠀⠀⠀⡄⢆⢄⠀⠀⠀⠀⠀⢀⢄⠢⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡮⢏⣏⢾⣄⠀⠀⠀⠀⠀⠀⣠⡷⣫⣛⢵⠀⠀⠀⡜⠈⠄⠀⠑⠄⠀⠀⡠⠁⠀⠡⠡⡃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⢣⢯⡺⣪⢗⠀⠀⠀⠀⠀⠀⣟⡕⣧⢳⡍⡄⠀⠀⠇⠀⠀⠀⠀⠈⡄⠰⠁⠀⠀⠀⠀⡂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣜⣏⢧⡟⡜⠀⠀⠀⠀⠀⠀⠱⣹⣎⣟⢥⠃⠀⠀⠰⠀⠀⠀⠀⠀⠁⠁⠀⠀⠀⠀⢀⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠏⠈⠉⠈⠀⠀⠀⠀⠀⠀⠀⠀⠈⠈⠉⠹⡀⠀⠀⠀⠑⠀⢠⠂⠉⢠⡄⠉⠰⡀⠐⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⠎⠀⠀⠀⠀⠀⠀⢡⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠸⠀⠀⠀⠀⠀⠀⠀⠀⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⡆⢥⠑⠌⢇⠀⠀⢇⠀⡀⢸⠀⠀⡇⠠⡀⡸⠀⠀⡰⠁⠀⠀⠀⠀⢂⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⢱⡱⠁⠁⠀⠀⢈⡢⡀⠘⡌⢆⢺⠀⠀⡧⡓⢬⠃⢀⢔⡁⠀⠀⠀⠀⠀⠘⡀⠀⠀⠀⠀⠀⢀⢠⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡪⡪⠀⠀⠀⢠⠪⡁⡀⣈⡀⠼⢔⣑⣀⣀⡨⡢⠧⢀⣁⢀⢈⡑⡄⠀⠀⠀⠀⠈⠘⣜⠀⠀⢧⠎⠁⠀⠑⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠑⡭⡀⠀⠀⠈⠉⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠈⠉⠀⠀⠀⠀⠀⠀⠀⠀⢀⡀⣀⢀⡀⠠⠘⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢜⡶⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠑⡈⠊⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠋⠫⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠂⠂⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+""")
 app.mainloop()
