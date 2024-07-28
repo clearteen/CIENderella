@@ -1,6 +1,3 @@
 images/
 
-# Ignore compiled bytecode files related to getPeople.py
-getPeople.pyc
-getPeople.pyo
-__pycache__/getPeople.*
+getPeople.py
