@@ -7,8 +7,6 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import WebDriverException
 import random
 
-from getPeople import count
-
 version = "1.5"
 
 
@@ -50,10 +48,8 @@ def run_submit_form(driver, url, writer, pw, people, reason, nowtime):
     title = f"{month}/{day}_CIEN 사용신청입니다."
     if people > 1:
         who = f"{writer} 외 {people-1}인"
-    elif people == 1:
-        who = writer
     else:
-        messagebox.showinfo("정보", "error!")
+        who = writer
     content = f"""
     동아리명: CIEN
     사용 날짜 및 시간: {next_month}월 {next_day}일 00시~07시
@@ -110,10 +106,9 @@ def run_submit_form(driver, url, writer, pw, people, reason, nowtime):
 
 
 def submit_form():
-    writer = writer_var.get() or "김현수"
-    people_input = people_var.get()
-    people = int(people_input) if people_input.isdigit() else count
-    reason = reason_var.get() or get_random_reason()
+    writer = "김현수"
+    people = 1
+    reason = get_random_reason()
 
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_experimental_option("detach", True)
@@ -134,7 +129,7 @@ def submit_form():
     # messagebox.showinfo("정보", "양식 제출이 완료되었습니다!")
 
 
-def show_help():
+'''def show_help():
     help_text = """- 입력값 공백 시 기본값으로 제출
 - 문제 시 삭제
 - 비밀번호 - 국룰 다섯 자리 숫자
@@ -157,9 +152,7 @@ frame.rowconfigure(4, minsize=30)
 ttk.Label(frame, text="글쓴이 (기본값: 김현수)").grid(
     row=1, column=0, sticky=tk.W, pady=5
 )
-ttk.Label(frame, text="인원 수 (기본값: 현재 인원 수)").grid(
-    row=2, column=0, sticky=tk.W, pady=5
-)
+ttk.Label(frame, text="인원 수 (기본값: 1)").grid(row=2, column=0, sticky=tk.W, pady=5)
 ttk.Label(frame, text="야간 신청 이유 (기본값: 랜덤)").grid(
     row=3, column=0, sticky=tk.W, pady=5
 )
@@ -191,9 +184,9 @@ ttk.Label(
     frame,
     text="기여자: 주황폰트, 곽아만, 야릇한미디움레어",
     font=("Helvetica", 9, "italic"),
-).grid(row=5, column=0, columnspan=2, pady=5, sticky=tk.E)
+).grid(row=5, column=0, columnspan=2, pady=5, sticky=tk.E)'''
 
-print(f"""<동아리방 야간 사용 신청 프로그램>
+'''print(f"""<동아리방 야간 사용 신청 프로그램>
 <ver {version}>
 - 기본값 수정
   * 작성자: 이기석 -> 김현수
@@ -239,5 +232,7 @@ print(f"""<동아리방 야간 사용 신청 프로그램>
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠑⡭⡀⠀⠀⠈⠉⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠈⠉⠀⠀⠀⠀⠀⠀⠀⠀⢀⡀⣀⢀⡀⠠⠘⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢜⡶⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠑⡈⠊⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠋⠫⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠂⠂⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-""")
-app.mainloop()
+""")'''
+# app.mainloop()
+
+submit_form()
