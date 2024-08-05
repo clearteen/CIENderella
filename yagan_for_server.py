@@ -6,8 +6,20 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import WebDriverException
 import random
+import logging
+import os
 
-version = "1.5"
+from getPeople import isPeople
+
+countPeople = isPeople()
+
+# 로그 설정
+logging.basicConfig(
+    filename="log_file",  # 로그 파일 경로
+    level=logging.INFO,  # 로그 수준 설정
+    format="%(asctime)s %(levelname)s:%(message)s",  # 로그 메시지 형식
+    datefmt="%Y-%m-%d %H:%M:%S",  # 날짜 형식
+)
 
 
 def get_random_reason():
@@ -67,7 +79,7 @@ def run_submit_form(driver, url, writer, pw, people, reason, nowtime):
         f"//div[contains(@class, 'li_board')]//*[contains(text(), '{title}')]",
     )
     if already:
-        messagebox.showinfo("정보", "오늘은 이미 작성했습니다!")
+        logging.info("already")
 
     else:
         # 2. 글쓰기 버튼 클릭
@@ -103,11 +115,18 @@ def run_submit_form(driver, url, writer, pw, people, reason, nowtime):
 
         # (전송)
         # find('//*[@id="board_container"]/div[1]/div/div[2]/button').click()
+        time.sleep(2)
+
+        # 로그 작성
+        logging.info(f"countPeople - {countPeople}")
+
+    # 종료
+    driver.quit()
 
 
 def submit_form():
     writer = "김현수"
-    people = 1
+    people = countPeople
     reason = get_random_reason()
 
     chrome_options = webdriver.ChromeOptions()
@@ -126,113 +145,8 @@ def submit_form():
         else datetime.now() - timedelta(days=1),
     )
 
-    # messagebox.showinfo("정보", "양식 제출이 완료되었습니다!")
 
-
-'''def show_help():
-    help_text = """- 입력값 공백 시 기본값으로 제출
-- 문제 시 삭제
-- 비밀번호 - 국룰 다섯 자리 숫자
-- 오전에 작성 시 작일 기준으로 프로그램 실행됨"""
-    messagebox.showinfo("Help", help_text)
-
-
-app = tk.Tk()
-app.title("동아리 야간 신청")
-app.geometry("400x220")
-app.resizable(False, False)
-
-frame = ttk.Frame(app, padding="10 10 10 10")
-frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
-
-frame.columnconfigure(0, weight=1)
-frame.columnconfigure(1, weight=1)
-frame.rowconfigure(4, minsize=30)
-
-ttk.Label(frame, text="글쓴이 (기본값: 김현수)").grid(
-    row=1, column=0, sticky=tk.W, pady=5
-)
-ttk.Label(frame, text="인원 수 (기본값: 1)").grid(row=2, column=0, sticky=tk.W, pady=5)
-ttk.Label(frame, text="야간 신청 이유 (기본값: 랜덤)").grid(
-    row=3, column=0, sticky=tk.W, pady=5
-)
-
-writer_var = tk.StringVar()
-people_var = tk.StringVar()
-reason_var = tk.StringVar()
-
-
-help_button = ttk.Button(frame, text="Help", command=show_help)
-help_button.grid(row=0, column=1, sticky=(tk.E))
-
-writer_entry = ttk.Entry(frame, textvariable=writer_var, width=30)
-writer_entry.grid(row=1, column=1, pady=5)
-
-people_entry = ttk.Entry(frame, textvariable=people_var, width=30)
-people_entry.grid(row=2, column=1, pady=5)
-
-reason_entry = ttk.Entry(frame, textvariable=reason_var, width=30)
-reason_entry.grid(row=3, column=1, pady=5)
-
-submit_button = ttk.Button(frame, text="제출", command=submit_form)
-submit_button.grid(
-    row=4, columnspan=2, ipady=5, ipadx=5, pady=10, sticky=(tk.W, tk.E, tk.W)
-)
-
-
-ttk.Label(
-    frame,
-    text="기여자: 주황폰트, 곽아만, 야릇한미디움레어",
-    font=("Helvetica", 9, "italic"),
-).grid(row=5, column=0, columnspan=2, pady=5, sticky=tk.E)'''
-
-'''print(f"""<동아리방 야간 사용 신청 프로그램>
-<ver {version}>
-- 기본값 수정
-  * 작성자: 이기석 -> 김현수
-  * 인원 수: 2 -> 1
-  * 맨날 내가 쓰는데 직접 적기 번거로움
-
-- 작성 시간에 따른 작성일 조정
-  * 오전 시간에 작성 시 작일 기준으로 작성일 설정
-  * 가끔 12시 넘겨서 쓸 수도 있는데, 그러면 그날 밤에 쓸 때 중복처리되는 거 막는 의도
-
-- 인원 수 직관성 개선
-  * 동아리방에 있는 인원 수 기준으로 작성
-  * "외 n명"의 n을기준으로 입력받았던 게 비직관적이라고 생각해서 수정함
-
-- 도움말 수정
-
-- 프로그램 실행 시 콘솔창에서 도트 이미지 출력(중요)
-  * 이런 거 하나쯤 있어야 됨
-  * 아직 미정
-
-<ver 1.5.1>
-- "도움말" -> "Help"
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠎⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⢀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡠⢃⠕⡸⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢧⢂⢋⠕⠒⠤⢄⣀⠀⣀⢀⣀⢀⢀⠔⠁⠀⡂⢊⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣎⢐⠀⠂⠀⠀⠀⠁⠀⠀⠀⠀⠈⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢢⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠰⡁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠛⠃⠀⠀⠀⠀⠘⠛⠀⠀⠀⠀⢕⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢇⠀⠀⠀⠀⠀⠀⠁⠊⠑⠈⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢈⡶⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⢶⡁⠀⠀⠀⠀⡄⢆⢄⠀⠀⠀⠀⠀⢀⢄⠢⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡮⢏⣏⢾⣄⠀⠀⠀⠀⠀⠀⣠⡷⣫⣛⢵⠀⠀⠀⡜⠈⠄⠀⠑⠄⠀⠀⡠⠁⠀⠡⠡⡃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⢣⢯⡺⣪⢗⠀⠀⠀⠀⠀⠀⣟⡕⣧⢳⡍⡄⠀⠀⠇⠀⠀⠀⠀⠈⡄⠰⠁⠀⠀⠀⠀⡂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣜⣏⢧⡟⡜⠀⠀⠀⠀⠀⠀⠱⣹⣎⣟⢥⠃⠀⠀⠰⠀⠀⠀⠀⠀⠁⠁⠀⠀⠀⠀⢀⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠏⠈⠉⠈⠀⠀⠀⠀⠀⠀⠀⠀⠈⠈⠉⠹⡀⠀⠀⠀⠑⠀⢠⠂⠉⢠⡄⠉⠰⡀⠐⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⠎⠀⠀⠀⠀⠀⠀⢡⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠸⠀⠀⠀⠀⠀⠀⠀⠀⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⡆⢥⠑⠌⢇⠀⠀⢇⠀⡀⢸⠀⠀⡇⠠⡀⡸⠀⠀⡰⠁⠀⠀⠀⠀⢂⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⢱⡱⠁⠁⠀⠀⢈⡢⡀⠘⡌⢆⢺⠀⠀⡧⡓⢬⠃⢀⢔⡁⠀⠀⠀⠀⠀⠘⡀⠀⠀⠀⠀⠀⢀⢠⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡪⡪⠀⠀⠀⢠⠪⡁⡀⣈⡀⠼⢔⣑⣀⣀⡨⡢⠧⢀⣁⢀⢈⡑⡄⠀⠀⠀⠀⠈⠘⣜⠀⠀⢧⠎⠁⠀⠑⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠑⡭⡀⠀⠀⠈⠉⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠈⠉⠀⠀⠀⠀⠀⠀⠀⠀⢀⡀⣀⢀⡀⠠⠘⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢜⡶⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠑⡈⠊⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠋⠫⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠂⠂⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-""")'''
-# app.mainloop()
-
-submit_form()
+if isPeople():
+    submit_form()
+else:
+    logging.info("None")

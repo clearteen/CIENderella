@@ -7,7 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import WebDriverException
 import random
 
-from getPeople import count
+from getPeople import isPeople
 
 version = 1.6
 
@@ -112,7 +112,7 @@ def run_submit_form(driver, url, writer, pw, people, reason, nowtime):
 def submit_form():
     writer = writer_var.get() or "김현수"
     people_input = people_var.get()
-    people = int(people_input) if people_input.isdigit() else count
+    people = int(people_input) if people_input.isdigit() else isPeople()
     reason = reason_var.get() or get_random_reason()
 
     chrome_options = webdriver.ChromeOptions()
