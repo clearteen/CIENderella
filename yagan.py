@@ -9,7 +9,7 @@ import random
 
 from getPeople import isPeople
 
-version = 1.6
+version = 1.7
 
 
 def get_random_reason():
@@ -49,7 +49,7 @@ def run_submit_form(driver, url, writer, pw, people, reason, nowtime):
     next_day = next_date.day
     title = f"{month}/{day}_CIEN 사용신청입니다."
     if people > 1:
-        who = f"{writer} 외 {people-1}인"
+        who = f"{writer} 외 {people - 1}인"
     elif people == 1:
         who = writer
     else:
@@ -63,6 +63,16 @@ def run_submit_form(driver, url, writer, pw, people, reason, nowtime):
     # 1. 웹사이트 접속
     driver.get(url)
     # time.sleep(3)
+
+    # SSL 인증
+    time.sleep(1)
+    try:
+        safety(lambda: find('//*[@id="details-button"]').click())
+        safety(lambda: find('//*[@id="proceed-link"]').click())
+        print("SSL")
+        time.sleep(1)
+    except:
+        print("no SSL")
 
     # 검사
     # already = web.uncertain(lambda: web.find(tag="span", name="Seats"))
@@ -195,9 +205,7 @@ ttk.Label(
 
 print(f"""<동아리방 야간 사용 신청 프로그램>
 <ver {version}>
-- 인원 수 기본값이 CCTV 기반으로 작성
-
-- 인원 수가 1보다 작을 때, 에러 출력
+- "연결이 비공개로.." 발생 시 통과 단계 추가
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠎⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⢀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡠⢃⠕⡸⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀

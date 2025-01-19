@@ -59,7 +59,7 @@ def run_submit_form(driver, url, writer, pw, people, reason, nowtime):
     next_day = next_date.day
     title = f"{month}/{day}_CIEN 사용신청입니다."
     if people > 1:
-        who = f"{writer} 외 {people-1}인"
+        who = f"{writer} 외 {people - 1}인"
     else:
         who = writer
     content = f"""
@@ -71,6 +71,16 @@ def run_submit_form(driver, url, writer, pw, people, reason, nowtime):
     # 1. 웹사이트 접속
     driver.get(url)
     # time.sleep(3)
+
+    # SSL 인증
+    time.sleep(1)
+    try:
+        safety(lambda: find('//*[@id="details-button"]').click())
+        safety(lambda: find('//*[@id="proceed-link"]').click())
+        print("SSL")
+        time.sleep(1)
+    except:
+        print("no SSL")
 
     # 검사
     # already = web.uncertain(lambda: web.find(tag="span", name="Seats"))
